@@ -1,0 +1,36 @@
+clear all;
+clc;
+N=80;
+L=30;
+[D,x]=cheb(N);
+y=L*(x+1)/2;
+I=eye(N+1);
+D1=(2/L)*D;
+D2=D1^2;
+D3=D1^3;
+f00=1*f02;
+Fm=f00;
+Fm1=f01;
+Fm2=fy+exp(-y)-1;
+f01=D1*f00;%f01=1-exp(-y)
+f02=D1*f01;
+f03=D02;
+Fm3=f03;
+iterations=20;
+for it=1:iterations
+    a1=0.5*Fm;
+    a2=0.5*Fm2;
+    A=D3 + diag(a1)*D2 + diag(a2)*I;
+    R=-(Fm3 + 0.5*Fm.*Fm2);
+    A(1,:)=D1(1,:);R(1)=0;
+    A(N,:)=D1(N+1,:); R(N)=0;
+    A(N+1,:)=I(N+1,:); R(N+1)=0;
+    Frt=A\R;
+    Fm=Fm + Frt;
+    Fm1=D1*Fm;
+    Fm2=D1*Fm1;
+    Fm3=D1*Fm2;
+    fprintf('%20.0f\t %20.8f\n',it-1,Fm2(N+1))
+end
+figure(1)
+plot(y,Fm1)
